@@ -24,6 +24,10 @@
   }
 </script>
 
+
+
+
+
 <style>
   /* ===== COLORES (para cambiar a azul clarito, mira las notas al final del archivo) ===== */
   :root {
@@ -81,7 +85,10 @@
   /* Inicio */
   .hero { padding: 64px 0 60px; }
   .hero .wrap { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 40px; align-items: center; }
-  .hero h1 { font-size: clamp(2.2rem, 5.6vw, 3.6rem); max-width: 16ch; }
+  /* Cambia los valores dentro del clamp para reducir el tamaño */
+  .hero h1 { 
+  font-size: clamp(1.8rem, 4.5vw, 2.8rem); /* Valores anteriores: 2.2rem, 5.6vw, 3.6rem */
+  max-width: 16ch; }
   .hero .lede { margin-top: 20px; font-size: 1.12rem; color: var(--ink-dim); max-width: 44ch; }
   .hero .cta-row { margin-top: 30px; display: flex; gap: 12px; flex-wrap: wrap; }
 
@@ -180,6 +187,160 @@
     .card-img.img-missing::after { font-size: 2.6rem; }
   }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; animation: none !important; } }
+
+/* ===== MEJORAS VISUALES ===== */
+:root { --gold: #D4AF6A; }
+
+/* Logo más pequeño */
+.logo { height: 140px; }
+
+/* Barra superior con degradado animado */
+.topbar {
+  background: linear-gradient(90deg, var(--sky), var(--petal), var(--sky));
+  background-size: 200% 100%;
+  animation: deslizar 8s ease-in-out infinite alternate;
+}
+@keyframes deslizar { from { background-position: 0% 0; } to { background-position: 100% 0; } }
+
+/* Fondo del inicio */
+.hero {
+  background:
+    radial-gradient(circle at 88% 15%, var(--petal) 0, transparent 42%),
+    radial-gradient(circle at 5% 95%, var(--sky) 0, transparent 38%);
+}
+
+/* Rayita dorada bajo los títulos de sección */
+.section-head h2::after {
+  content: ""; display: block; width: 64px; height: 3px; margin-top: 12px;
+  border-radius: 3px; background: linear-gradient(90deg, var(--rose), var(--gold));
+}
+
+/* Botones: brillo + levantamiento */
+.btn, .btn-mini { position: relative; overflow: hidden; isolation: isolate; }
+.btn::after, .btn-mini::after {
+  content: ""; position: absolute; top: 0; left: -75%; width: 50%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,.7), transparent);
+  transform: skewX(-20deg); transition: left .6s ease; pointer-events: none;
+}
+.btn:hover::after, .btn-mini:hover::after { left: 130%; }
+.btn:hover, .btn-mini:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(232,160,182,.55); }
+.btn-ghost:hover { border-color: var(--rose-deep); color: var(--rose-deep); }
+
+/* Botón flotante con latido */
+.wa-float { animation: latido 2.6s ease-out infinite; }
+@keyframes latido {
+  0%   { box-shadow: 0 6px 18px rgba(74,47,60,.28), 0 0 0 0 rgba(142,58,87,.45); }
+  70%  { box-shadow: 0 6px 18px rgba(74,47,60,.28), 0 0 0 16px rgba(142,58,87,0); }
+  100% { box-shadow: 0 6px 18px rgba(74,47,60,.28), 0 0 0 0 rgba(142,58,87,0); }
+}
+
+/* Borde dorado en tarjetas al pasar el mouse */
+.card:hover { border-color: #E3C58A; }
+
+/* Aparición suave de tarjetas (la clase "reveal" la pone el script del bloque 2) */
+.card.reveal { opacity: 0; }
+.card.reveal.visible { opacity: 1; animation: subir .6s ease backwards; }
+@keyframes subir { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+
+/* Filtros pegados arriba */
+.filters {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 15;
+  background: rgba(255,245,247,.92); backdrop-filter: blur(8px);
+  padding: 10px 0; margin-bottom: 18px;
+}
+@media (max-width: 720px) {
+  .filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .filters::-webkit-scrollbar { display: none; }
+  .filters button { flex-shrink: 0; white-space: nowrap; }
+}
+
+/* Franja de ventajas (bloque 3, opcional) */
+.perks { background: #fff; border-bottom: 1px solid var(--line); padding: 18px 0; }
+.perks .wrap { display: flex; justify-content: space-around; gap: 16px; flex-wrap: wrap; text-align: center; font-weight: 700; font-size: .95rem; color: var(--rose-deep); }
+
+/* ===== BOTONES: relleno deslizante + flecha ===== */
+.btn::after, .btn-mini::after { display: none; } /* quita el brillo anterior */
+
+.btn, .btn-mini {
+  background: linear-gradient(120deg, var(--rose) 50%, var(--rose-deep) 50%);
+  background-size: 200% 100%;
+  background-position: 0 0;
+  transition: background-position .45s ease, color .3s ease, transform .2s ease, box-shadow .3s ease;
+}
+
+/* Flechita que aparece (se coloca después del texto) */
+.btn-mini::before, .btn:not(.btn-ghost)::before {
+  content: "→"; order: 2; width: 0; opacity: 0; overflow: hidden;
+  transition: width .3s ease, opacity .3s ease;
+}
+
+/* Botón de borde: se rellena igual */
+.btn-ghost {
+  background: linear-gradient(120deg, transparent 50%, var(--rose-deep) 50%);
+  background-size: 200% 100%;
+  background-position: 0 0;
+}
+
+/* Hover solo en dispositivos con mouse */
+@media (hover: hover) {
+  .btn:hover, .btn-mini:hover {
+    background-position: 100% 0; color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(142, 58, 87, .35);
+  }
+  .btn-ghost:hover { border-color: var(--rose-deep); }
+  .btn-mini:hover::before, .btn:not(.btn-ghost):hover::before { width: 1em; opacity: 1; }
+}
+
+/* Al presionar (mouse y celular) */
+.btn:active, .btn-mini:active { transform: scale(.96); }
+
+/* Filtros */
+.filters button { transition: transform .2s ease, background .2s ease, border-color .2s ease, color .2s ease; }
+@media (hover: hover) { .filters button:hover { transform: translateY(-2px); } }
+.filters button:active { transform: scale(.94); }
+.filters button.active { animation: pop .3s ease; }
+@keyframes pop { 50% { transform: scale(1.08); } }
+
+/* Botón flotante: ícono que se inclina */
+.wa-float svg { transition: transform .3s ease; }
+@media (hover: hover) { .wa-float:hover svg { transform: rotate(-12deg) scale(1.15); } }
+
+
+/* ===== CATEGORÍAS EN CÍRCULOS ===== */
+.filters.cats {
+  position: static; background: none; backdrop-filter: none;
+  flex-wrap: nowrap; overflow-x: auto; gap: 20px;
+  padding: 10px 6px 16px; scrollbar-width: none;
+}
+.filters.cats::-webkit-scrollbar { display: none; }
+
+.cats button, .cats button.active {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  flex-shrink: 0; width: 92px; padding: 0;
+  background: none; border: none; box-shadow: none; color: var(--ink-dim);
+}
+.cats button.active { color: var(--rose-deep); }
+.cats button:hover { transform: none; }
+.cats button::before { content: none; }
+
+.cat-img {
+  width: 76px; height: 76px; border-radius: 50%; overflow: hidden;
+  display: flex; align-items: center; justify-content: center; font-size: 2rem;
+  background: #fff; border: 3px solid #fff;
+  box-shadow: 0 0 0 1.5px var(--line), 0 4px 10px rgba(74, 47, 60, .12);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.cat-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (hover: hover) { .cats button:hover .cat-img { transform: translateY(-4px); } }
+.cats button.active .cat-img { box-shadow: 0 0 0 3px var(--rose), 0 0 0 5px var(--gold), 0 6px 14px rgba(232, 160, 182, .5); }
+.cat-name { font-size: .82rem; font-weight: 700; text-align: center; line-height: 1.2; }
+
+
+.grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+
+
+
 </style>
 </head>
 <body>
@@ -206,7 +367,7 @@
   <div class="wrap">
     <div>
       <h1>Un detalle puede decir lo que las palabras no alcanzan</h1>
-      <p class="lede">Ramos, peluches y sorpresas preparados con cariño para cumpleaños, aniversarios, Eventos, Primera comunión, Bautizo y Arreglos de condolencia.</p>
+      <p class="lede">Arreglos florales, detalles sorpresa elaborados con amor para toda ocasión, Eventos sociales, arreglo fúnebre.</p>
       <div class="cta-row">
         <a class="btn" data-wa="general" href="https://wa.me/573000000000" target="_blank" rel="noopener">Pedir por WhatsApp</a>
         <a class="btn btn-ghost" href="#detalles">Ver detalles</a>
@@ -222,366 +383,47 @@
   </div>
 </section>
 
-<section id="detalles">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>Detalles para regalar</h2>
-      <p>Escríbenos por WhatsApp para saber el precio y la disponibilidad de cada uno.</p>
-    </div>
 
-    <div class="filters">
-      <button class="filter-btn active" data-filter="all">Todos</button>
-      <button class="filter-btn" data-filter="ramos">Ramos</button>
-      <button class="filter-btn" data-filter="Detalles en base">Detalles en base</button>
-      <button class="filter-btn" data-filter="Fruteros">Fruteros</button>
-      <button class="filter-btn" data-filter="Primera comunion">Primera comunión</button>
-      <button class="filter-btn" data-filter="Matrimonio">Matrimonio</button>
-      <button class="filter-btn" data-filter="Arreglo Funeral">Arreglo Funeral </button>
-      <button class="filter-btn" data-filter="Decoraciones con globos">Decoraciónes con globos</button>
-      <button class="filter-btn" data-filter="Globos con helio">Globos cón helio </button>
-      <button class="filter-btn" data-filter="Centro Buquet"> Centro Buquet</button>
-      <button class="filter-btn" data-filter="Eventos">Eventos</button>
-      <button class="filter-btn" data-filter="Arreglos de condolencia">Arreglos de condolencia</button>
-    </div>
+<section id="detalles">
+  <div class="perks">
+  <div class="wrap">
+    <span>🌸 Los mejores Bouquets estan aquí</span>
+    <span>🎁 Personalizamos tu pedido</span>
+    <span>💬 Atención directa por WhatsApp</span>
+  </div>
+</div>
+
+    <div class="filters cats">
+  <button class="filter-btn active" data-filter="all">
+    <span class="cat-img">✨</span><span class="cat-name">Todos</span>
+  </button>
+  <button class="filter-btn" data-filter="Bouquets">
+    <span class="cat-img"><img src="imagen59snf.jpg" alt="" loading="lazy"></span><span class="cat-name">Bouquets</span>
+  </button>
+  <button class="filter-btn" data-filter="Fruteros">
+    <span class="cat-img"><img src="imagen35.jpg" alt="" loading="lazy"></span><span class="cat-name">Fruteros</span>
+  </button>
+  <button class="filter-btn" data-filter="Eventos">
+    <span class="cat-img"><img src="imagen19.jpg" alt="" loading="lazy"></span><span class="cat-name">Eventos</span>
+  </button>
+  <button class="filter-btn" data-filter="Arreglos de condolencia">
+    <span class="cat-img"><img src="imagen16snf.jpg" alt="" loading="lazy"></span><span class="cat-name">Condolencia</span>
+  </button>
+  <button class="filter-btn" data-filter="Cajitas">
+    <span class="cat-img"><img src="imagen2snf.jpg" alt="" loading="lazy"></span><span class="cat-name">Cajitas</span>
+  </button>
+</div>
 
     <div class="grid">
 
       <!-- Para agregar un detalle: copia una tarjeta completa (de <div class="card"> hasta su </div>),
            cambia la foto, el nombre y la categoría (data-category y la etiqueta). -->
 
-      <div class="card" data-category="peluches">
-        <div class="card-img" data-ph="💐"><img src="ramo_peluche_azul.jpg" alt="Ramo con peluche azul y rosas" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Peluche</span>
-          <h3>Ramo de Stitch con Rosas Eternas</h3>
-          <p class="card-desc">El regalo soñado para los fanáticos de Stitch.</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
 
-      <div class="card" data-category="detalles">
-        <div class="card-img" data-ph="🧸"><img src="rosas_rojas_detalle.jpg" alt="Peluche con globos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">detalles</span>
-          <h3>Cartera de Rosas</h3>
-          <p class="card-desc">Consiente a tu persona favorita con este detalle de lujo.</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
 
-      <div class="card" data-category="detalles">
-        <div class="card-img" data-ph="🎁"><img src="flores_rosas_ositoblanco.jpg" alt="Caja de detalles" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Detalles</span>
-          <h3>Caja Sorpresa Snoopy</h3>
-          <p class="card-desc">El detalle más dulce y original, Una hermosa caja con peluche de Snoopy.</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="detalles">
-        <div class="card-img" data-ph="🌸"><img src="flores_moradas_detalle.jpg" alt="Arreglo floral" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Detalles</span>
-          <h3>Arreglo floral</h3>
-          <p class="card-desc">Hermoso ramo eterno elaborado artesanalmente en tonos lavanda y morado.</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="ramos">
-        <div class="card-img" data-ph="💝"><img src="flores_rojas_soloramo.jpg" alt="Ramo sorpresa" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Ramo Eterno de Lirios y Gerberas Rojas</h3>
-          <p class="card-desc">Exclusivo arreglo de flores eterna, Presentación de lujo con envoltura premium.</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="ramos">
-        <div class="card-img" data-ph="💝"><img src="detalle_cerveza_corona_nusita.jpg" alt="Ramo sorpresa" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Caja de Regalo</h3>
-          <p class="card-desc">Sorprende en cualquier ocasión con este exclusivo detalle.</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="ramos">
-        <div class="card-img" data-ph="💝"><img src="detalle_cervez_amarillo.jpg" alt="Ramo sorpresa" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Caja de Regalo amor</h3>
-          <p class="card-desc">Expresa tus sentimientos con un regalo inolvidable.</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="ramos">
-        <div class="card-img" data-ph="💝"><img src="rosas_con_girasol.jpg" alt="Ramo sorpresa" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Ramo de Girasol</h3>
-          <p class="card-desc"> La combinación perfecta de pasión y alegría.</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="ramos">
-        <div class="card-img" data-ph="💝"><img src="ramo_rosas_flores_blancas_papelrosa.jpg" alt="Ramo sorpresa" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Ramo de Lirios y Rosas</h3>
-          <p class="card-desc">Elegancia y frescura en un solo detalle.</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="ramos">
-        <div class="card-img" data-ph="💝"><img src="rosas_rojas_blancas_papelborderojo.jpg" alt="Ramo sorpresa" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Ramo de Lirios</h3>
-          <p class="card-desc">El contraste perfecto entre la pasión de las rosas rojas y la elegancia de los lirios blancos.</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="ramos">
-        <div class="card-img" data-ph="💝"><img src="flores_rosadas_blancas_papelblanco77.jpg" alt="Ramo sorpresa" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Lirios y Gerberas Rosadas</h3>
-          <p class="card-desc">Un diseño lleno de ternura y alegría. Combina majestuosos lirios blancos.</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Eventos">
-        <div class="card-img" data-ph="💝"><img src="decoracion50años.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Eventos</span>
-          <h3>Decoraciones</h3>
-          <p class="card-desc">Hermosa decoracion </p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Eventos">
-        <div class="card-img" data-ph="💝"><img src="decoracion75años.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Eventos</span>
-          <h3>Hermosa decoracion</h3>
-          <p class="card-desc">75 años cuidando tu mente</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Eventos">
-        <div class="card-img" data-ph="💝"><img src="decoracionmejance.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Eventos</span>
-          <h3>decoracion cumpleaños
-          </h3>
-          <p class="card-desc">Para una ocaicion especial</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Eventos">
-        <div class="card-img" data-ph="💝"><img src="deocracionderosasblancas.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Eventos</span>
-          <h3>Decoracion rosas blancas</h3>
-          <p class="card-desc">La mejor decoracion de rosas blancas</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Eventos">
-        <div class="card-img" data-ph="💝"><img src="decoracionparaevento.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Eventos</span>
-          <h3>Decoracion alamuerzo</h3>
-          <p class="card-desc">La mejor decoracion para tus eventos</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Detalles en base">
-        <div class="card-img" data-ph="💝"><img src="imagen1.jpg" alt="Detalles en base" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Detalles en base</span>
-          <h3>detalles en sabe</h3>
-          <p class="card-desc">Un combo hermoso girasoles, rosas rojas y amarilas</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Detalles en base">
-        <div class="card-img" data-ph="💝"><img src="imagen2.jpg" alt="Detalles en base" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Detalles en base</span>
-          <h3>Rosas rojas</h3>
-          <p class="card-desc">hermoso detalle, rosas rojas</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Detalles en base">
-        <div class="card-img" data-ph="💝"><img src="imagen3.jpg" alt="Detalles en base" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Detalles en base</span>
-          <h3>detalle leon</h3>
-          <p class="card-desc">hermoso detalle, rosas amarillas</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Detalles en base">
-        <div class="card-img" data-ph="💝"><img src="imagen4.jpg" alt="Detalles en base" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Detalles en base</span>
-          <h3>Girasol y rosas</h3>
-          <p class="card-desc">hermoso detalle, rosas y girasoles</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Detalles en base">
-        <div class="card-img" data-ph="💝"><img src="imagen5.jpg" alt="Detalles en base" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Detalles en base</span>
-          <h3>virgen maria rosas</h3>
-          <p class="card-desc">Hermoso detalle, virgen maria rosas amarilas</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Detalles en base">
-        <div class="card-img" data-ph="💝"><img src="imagen6.jpg" alt="Detalles en base" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Detalles en base</span>
-          <h3>Detalle rosas rosadas, balcas y flores purpura</h3>
-          <p class="card-desc">Hermoso detalle, la mejor combinacion con amor</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Detalles en base">
-        <div class="card-img" data-ph="💝"><img src="imagen7.jpg" alt="Detalles en base" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Detalles en base</span>
-          <h3>Detalle mil rosa</h3>
-          <p class="card-desc">Hermoso detalle, Rosas de todos lo colores</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Detalles en base">
-        <div class="card-img" data-ph="💝"><img src="imagen8.jpg" alt="Detalles en base" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Detalles en base</span>
-          <h3>Rosas y lirios</h3>
-          <p class="card-desc">Hermoso detalle, Rosas rosadas y lirios</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Detalles en base">
-        <div class="card-img" data-ph="💝"><img src="imagen9.jpg" alt="Detalles en base" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Detalles en base</span>
-          <h3>Rosas rojas, chocolates</h3>
-          <p class="card-desc">Hermoso detalle, Rosas rojas chocolates</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Detalles en base">
-        <div class="card-img" data-ph="💝"><img src="imagen10.jpg" alt="Detalles en base" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Detalles en base</span>
-          <h3>Rosas Maria </h3>
-          <p class="card-desc">Hermoso detalle, Rosasitas Maria</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Detalles en base">
-        <div class="card-img" data-ph="💝"><img src="image11.jpg" alt="Detalles en base" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Detalles en base</span>
-          <h3>Rosas y girasoles </h3>
-          <p class="card-desc">Hermoso detalle, rosas y girasoles</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Detalles en base">
-        <div class="card-img" data-ph="💝"><img src="imagen12.jpg" alt="Detalles en base" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Detalles en base</span>
-          <h3>Velo de novia </h3>
-          <p class="card-desc">Amor en su Máxima Expresión</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Detalles en base">
-        <div class="card-img" data-ph="💝"><img src="imagen13.jpg" alt="Detalles en base" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Detalles en base</span>
-          <h3>Hermosas, Rositas rosas</h3>
-          <p class="card-desc">Rosas para el Amor de mi Vida</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="ramos">
-        <div class="card-img" data-ph="💝"><img src="lirios_blancos_rosasrojas_papelamarillento.jpg" alt="Ramo sorpresa" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Lirios y Gerberas Rojas</h3>
-          <p class="card-desc">Un imponente arreglo que equilibra la pureza de los lirios blancos.</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="peluches">
-        <div class="card-img" data-ph="💐"><img src="osito_deflores_blancas.jpg" alt="Ramo con peluche azul y rosas" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Peluches</span>
-          <h3>Oso de Rosas Eternas Blanco</h3>
-          <p class="card-desc"> Un regalo mágico que dura para siempre. Hermoso oso hecho con delicadas rosas blancas.</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
+      
       <div class="card" data-category="Arreglos de condolencia">
-        <div class="card-img" data-ph="💐"><img src="imagen14.jpg" alt="Arreglo de condolencia" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Arreglo de condolencia</span>
-          <h3> Consuelo, unión, fortaleza</h3>
-          <p class="card-desc">En Memoria y Sentido Homenaje</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Arreglos de condolencia">
-        <div class="card-img" data-ph="💐"><img src="imagen15.jpg" alt="Arreglo de condolencia" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Arreglo de condolencia</span>
-          <h3>Luz, esperanza, oración</h3>
-          <p class="card-desc">Descanso Eterno y Luz Celestial</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Arreglos de condolencia">
-        <div class="card-img" data-ph="💐"><img src="imagen16.jpg" alt="Arreglo de condolencia" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-img" data-ph="💐"><img src="imagen16snf.jpg" alt="Arreglo de condolencia" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
           <span class="tag">Arreglo de condolencia</span>
           <h3>Amor, recuerdo, gratitud</h3>
@@ -591,7 +433,28 @@
       </div>
 
       <div class="card" data-category="Arreglos de condolencia">
-        <div class="card-img" data-ph="💐"><img src="imagen17.jpg" alt="Arreglo de condolencia" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-img" data-ph="💐"><img src="imagen14snf.jpg" alt="Arreglo de condolencia" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Arreglo de condolencia</span>
+          <h3> Consuelo, unión, fortaleza</h3>
+          <p class="card-desc">En Memoria y Sentido Homenaje</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Arreglos de condolencia">
+        <div class="card-img" data-ph="💐"><img src="imagen15snf.jpg" alt="Arreglo de condolencia" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Arreglo de condolencia</span>
+          <h3>Luz, esperanza, oración</h3>
+          <p class="card-desc">Descanso Eterno y Luz Celestial</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+
+      <div class="card" data-category="Arreglos de condolencia">
+        <div class="card-img" data-ph="💐"><img src="imagen17snf.jpg" alt="Arreglo de condolencia" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
           <span class="tag">Arreglo de condolencia</span>
           <h3>Homenaje a una Vida Inolvidable</h3>
@@ -601,7 +464,27 @@
       </div>
 
       <div class="card" data-category="Arreglos de condolencia">
-        <div class="card-img" data-ph="💐"><img src="imagen18.jpg" alt="Arreglo de condolencia" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-img" data-ph="💐"><img src="imagen78snf.jpg" alt="Arreglos de condolencia" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Arreglos de condolencia</span>
+          <h3>Corona Luz Eterna</h3>
+          <p class="card-desc">Paz, respeto, consuelo</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Arreglos de condolencia">
+        <div class="card-img" data-ph="💐"><img src="imagen73snf.jpg" alt="Arreglos de condolencia" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Arreglo de condolencia</span>
+          <h3>Corona Homenaje de Luz</h3>
+          <p class="card-desc">Respeto, paz, consuelo</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+       <div class="card" data-category="Arreglos de condolencia">
+        <div class="card-img" data-ph="💐"><img src="imagen18snf.jpg" alt="Arreglo de condolencia" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
           <span class="tag">Arreglo de condolencia</span>
           <h3> Corona Fúnebre Serenidad </h3>
@@ -610,52 +493,627 @@
         </div>
       </div>
 
-      <div class="card" data-category="Primera comunion">
-        <div class="card-img" data-ph="💐"><img src="imagen19.jpg" alt="Primera comunion" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen59snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
-          <span class="tag">Primera comunion</span>
+          <span class="tag">Bouquets</span>
+          <h3>Corona de Soles y Oro</h3>
+          <p class="card-desc">Sofisticación, tendencia, elegancia</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen61snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3> Maxi Coreano Dulce Tentación Rosa</h3>
+          <p class="card-desc">Romance, dulzura, abundancia</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen62snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Maxi Coreano Pasión e Lirios</h3>
+          <p class="card-desc">Romance, abundancia, majestuosidad</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen63snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquet Silvestre Ilusión Lila y Rosa</h3>
+          <p class="card-desc">Delicadeza, encanto, primavera</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen64.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquet Imperial Éxito Radiante con Girasoles</h3>
+          <p class="card-desc">Celebración, brillo, triunfo</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen65snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3> Bouquets de Rosas Rojas con Chocolates</h3>
+          <p class="card-desc">Detalle, elegancia, sorpresa</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen66snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Elegancia rosa natural</h3>
+          <p class="card-desc">Ramillete Esplendor</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen67snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Amor Eterno</h3>
+          <p class="card-desc">Romance, pasión, elegancia</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen68snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Destello de Sol</h3>
+          <p class="card-desc">Energía, luz, alegría</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💝"><img src="imagen7snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets mil rosa</h3>
+          <p class="card-desc">Hermoso detalle, Rosas de todos lo colores</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💝"><img src="imagen8snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Boquets Rosas y lirios</h3>
+          <p class="card-desc">Hermoso detalle, Rosas rosadas y lirios</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💝"><img src="imagen9snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Rosas rojas, chocolates</h3>
+          <p class="card-desc">Hermoso detalle, Rosas rojas chocolates</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💝"><img src="imagen6snf.jpg" alt="Boquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets  rosas rosadas, blancas y flores purpura</h3>
+          <p class="card-desc">Hermoso detalle, la mejor combinacion con amor</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+       <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen46.snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Maxi Imperial de Lirios Rosados</h3>
+          <p class="card-desc">Abundancia, elegancia, majestuosidad</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen47snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Maxi Corazón Latidos de Amor</h3>
+          <p class="card-desc">Pasión, romance, impacto</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+      
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen48snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Coreano Corazón Dulce Pasión</h3>
+          <p class="card-desc">Romance, dulzura, encanto</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen49snfn.jpg" alt="Boquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3> Bouquets Destellos de Girasol</h3>
+          <p class="card-desc"> Alegría, energía, vitalidad</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen79snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Arreglo Selección Imperial</h3>
+          <p class="card-desc">Rosas y vino</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💝"><img src="imagen4snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Girasol y rosas</h3>
+          <p class="card-desc">hermoso detalle, rosas y girasoles</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💝"><img src="imagen12snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Velo de novia </h3>
+          <p class="card-desc">Amor en su Máxima Expresión</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💝"><img src="imagen13snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Rositas rosas</h3>
+          <p class="card-desc">Rosas para el Amor de mi Vida</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💝"><img src="lirios_blancos_rosasrojas_papelamarillento.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Lirios y Gerberas Rojas</h3>
+          <p class="card-desc">Un imponente Detalle que equilibra la pureza de los lirios blancos.</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💝"><img src="imagen11snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Rosas y girasoles </h3>
+          <p class="card-desc">Hermoso detalle, rosas y girasoles</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen52.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3> Bouquets Corazón de Pasión con Pedrería</h3>
+          <p class="card-desc">Romance, lujo, impacto</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen54.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Imperial con Inicial Personalizada</h3>
+          <p class="card-desc">Exclusividad, romance, impacto</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen55.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquet de Mano Elegancia Imperial</h3>
+          <p class="card-desc">Distinción, sofisticación, abundancia</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen56snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Coreano Dulce Romance y Fresas</h3>
+          <p class="card-desc"> Delicadeza, dulzura, encanto</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen57.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquet Imperial de Rosas Pastel y Chocolates</h3>
+          <p class="card-desc"> Elegancia, exclusividad, impacto</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen69snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Pasión Absoluta</h3>
+          <p class="card-desc"> Amor, romance, intensidad.</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💝"><img src="imagen1snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets girasoles y rosas</h3>
+          <p class="card-desc">Un combo hermoso girasoles, rosas rojas y amarilas</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+       <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen45snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Coquette de Rosas</h3>
+          <p class="card-desc">Tendencia, delicadeza, estilo</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen60.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Ramo Selecto Celebración Dorada</h3>
+          <p class="card-desc">Brillo, éxito, distinción</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen53snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Rosas Amarillas </h3>
+          <p class="card-desc">Elegancia, contraste, distinción</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen71snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Dulce Pasión</h3>
+          <p class="card-desc">Bouquets premium</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen70snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Ternura Rosa</h3>
+          <p class="card-desc">Dulzura, encanto, delicadeza</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💝"><img src="rosas_con_girasol.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets de Girasol</h3>
+          <p class="card-desc"> La combinación perfecta de pasión y alegría.</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="imagen58snf.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Rosas Mixtas con Peluche </h3>
+          <p class="card-desc"> Completo, vistoso, distinción</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💝"><img src="flores_rojas_soloramo.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Eterno de Lirios y Gerberas Rojas</h3>
+          <p class="card-desc">Exclusivo arreglo de flores eterna, Presentación de lujo con envoltura premium.</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💝"><img src="ramo_rosas_flores_blancas_papelrosa.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Lirios y Rosas</h3>
+          <p class="card-desc">Elegancia y frescura en un solo detalle.</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💝"><img src="rosas_rojas_blancas_papelborderojo.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Ramo de Lirios</h3>
+          <p class="card-desc">El contraste perfecto entre la pasión de las rosas rojas y la elegancia de los lirios blancos.</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💝"><img src="flores_rosadas_blancas_papelblanco77.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Lirios y Gerberas Rosadas</h3>
+          <p class="card-desc">Un diseño lleno de ternura y alegría. Combina majestuosos lirios blancos.</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💝"><img src="lirios_blancos_rosasrojas_papelamarillento.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets Lirios y Gerberas Rojas</h3>
+          <p class="card-desc">Un imponente arreglo que equilibra la pureza de los lirios blancos.</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Fruteros">
+        <div class="card-img" data-ph="💐"><img src="imagen35.jpg" alt="Fruteros" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Fruteros</span>
+          <h3>Cesta Frutal y Floral Rayo de Sol</h3>
+          <p class="card-desc">Frescura, vitalidad, alegría</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Fruteros">
+        <div class="card-img" data-ph="💐"><img src="imagen37snf.jpg" alt="Fruteros" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Fruteros</span>
+          <h3>Arreglo Cumpleaños Sol y Alegría</h3>
+          <p class="card-desc">Sorpresa, abundancia, festejo</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Fruteros">
+        <div class="card-img" data-ph="💐"><img src="imagen38snf.jpg" alt="Fruteros" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Fruteros</span>
+          <h3> Arreglo Exótico Pasión y Brindis Premium</h3>
+          <p class="card-desc">Romance, distinción, celebración</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Fruteros">
+        <div class="card-img" data-ph="💐"><img src="imagen39snf.jpg" alt="Fruteros" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Fruteros</span>
+          <h3>Cascada de Rosas y Girasoles Amor Eterno</h3>
+          <p class="card-desc">Romance, abundancia, energía</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Fruteros">
+        <div class="card-img" data-ph="💐"><img src="imagen40snf.jpg" alt="Fruterosos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Fruteros</span>
+          <h3>Arreglo Exótico Torre de Girasoles</h3>
+          <p class="card-desc">Altura, color, exotismo</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+
+
+      <div class="card" data-category="Fruteros">
+        <div class="card-img" data-ph="💐"><img src="imagen42snf.jpg" alt="Fruteros" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Fruteros</span>
+          <h3> Desayuno Sorpresa Feliz Cumpleaños </h3>
+          <p class="card-desc">Festejo, abundancia, alegría</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Fruteros">
+        <div class="card-img" data-ph="💐"><img src="iamgen81snf.jpg" alt="Fruteros" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Fruteros</span>
+          <h3>Canasta Dulce Armonía</h3>
+          <p class="card-desc">Rosas, frutas, frescura</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Cajitas">
+        <div class="card-img" data-ph="💝"><img src="imagen2snf.jpg" alt="Cajitas" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Cajitas</span>
+          <h3>Rosas rojas</h3>
+          <p class="card-desc">hermoso detalle, rosas rojas</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Fruteros">
+        <div class="card-img" data-ph="💐"><img src="imagen43snf.jpg" alt="Fruteros" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Fruteros</span>
+          <h3> Desayuno Sorpresa Papá el Mejor del Mundo</h3>
+          <p class="card-desc">Festejo, tradición, alegría</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Fruteros">
+        <div class="card-img" data-ph="💐"><img src="imagen44snf.jpg" alt="Fruteros" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Fruteros</span>
+          <h3>Combo Dulce Encanto con Peluche</h3>
+          <p class="card-desc">Ternura, diversión, dulzura</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+
+      <div class="card" data-category="Cajitas">
+        <div class="card-img" data-ph="💐"><img src="imagen50snf.jpg" alt="Cajitas" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Cajitas</span>
+          <h3>Corazón de Madera con Flores Exóticas</h3>
+          <p class="card-desc"> Creatividad, color, encanto</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Cajitas">
+        <div class="card-img" data-ph="💐"><img src="imagen51snf.jpg" alt="Cajitas" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Cajitas</span>
+          <h3>Osito de Girasoles Abrazo de Sol</h3>
+          <p class="card-desc">Ternura, creatividad, alegría</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+
+      <div class="card" data-category="Cajitas">
+        <div class="card-img" data-ph="💐"><img src="imagen72snf.jpg" alt="Cajitas" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Cajitas</span>
+          <h3>Caja Flechazo de Amor</h3>
+          <p class="card-desc">Rosas, chocolates, romance absoluto</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Cajitas">
+        <div class="card-img" data-ph="💝"><img src="imagen5snf.jpg" alt="Cajitas" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Cajitas</span>
+          <h3>Virgen maria rosas</h3>
+          <p class="card-desc">Hermoso detalle, Virgen maria rosas amarilas</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+
+
+      <div class="card" data-category="Cajitas">
+        <div class="card-img" data-ph="💝"><img src="imagen10snf.jpg" alt="Cajitas" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Cajitas</span>
+          <h3>Rosas Maria </h3>
+          <p class="card-desc">Hermoso detalle, Rosasitas Maria</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+
+      <div class="card" data-category="Eventos">
+        <div class="card-img" data-ph="💐"><img src="imagen19.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Eventos</span>
           <h3>Decoración Primera Comunión</h3>
           <p class="card-desc">Ilusión, fe, pureza</p>
           <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
         </div>
       </div>
 
-      <div class="card" data-category="Primera comunion">
-        <div class="card-img" data-ph="💐"><img src="imagen20.jpg" alt="Primera comunion" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+
+      <div class="card" data-category="Eventos">
+        <div class="card-img" data-ph="💐"><img src="imagen27.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
-          <span class="tag">Primera comunion</span>
-          <h3>Angelito de Luz</h3>
-          <p class="card-desc">Ternura, inocencia, celebración</p>
+          <span class="tag">Eventos</span>
+          <h3>Fondo Circular de Globos Orgánicos y Flores</h3>
+          <p class="card-desc">Tendencia, dinamismo, frescura</p>
           <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
         </div>
       </div>
 
-      <div class="card" data-category="Primera comunion">
-        <div class="card-img" data-ph="💐"><img src="imagen21.jpg" alt="Primera comunion" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+      <div class="card" data-category="Eventos">
+        <div class="card-img" data-ph="💐"><img src="imagen28.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
-          <span class="tag">Primera comunion</span>
-          <h3> Arreglo Bautizo Azul Celestial</h3>
-          <p class="card-desc"> Alegría, fe, pureza</p>
+          <span class="tag">Eventos</span>
+          <h3>Set Escenográfico Infantil Aventura de Bluey</h3>
+          <p class="card-desc">Diversión, colorido, alegría</p>
           <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
         </div>
       </div>
 
-      <div class="card" data-category="Primera comunion">
-        <div class="card-img" data-ph="💐"><img src="imagen22.jpg" alt="Primera comunion" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+      <div class="card" data-category="Eventos">
+        <div class="card-img" data-ph="💝"><img src="decoracionmejance.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
-          <span class="tag">Primera comunion</span>
-          <h3>Camino de Mesa Floral</h3>
-          <p class="card-desc">Elegancia, frescura, distinción</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Primera comunion">
-        <div class="card-img" data-ph="💐"><img src="imagen23.jpg" alt="Primera comunion" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Primera comunion</span>
-          <h3>Decoración de Iglesia Sendero Nupcial</h3>
-          <p class="card-desc">Romance, solemnidad, elegancia</p>
+          <span class="tag">Eventos</span>
+          <h3>decoracion cumpleaños</h3>
+          <p class="card-desc">Para una ocaicion especial</p>
           <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
         </div>
       </div>
@@ -681,31 +1139,61 @@
       </div>
 
       <div class="card" data-category="Eventos">
-        <div class="card-img" data-ph="💐"><img src="imagen26.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-img" data-ph="💐"><img src="imagen32.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
           <span class="tag">Eventos</span>
-          <h3>Mesa de Dulces Eucarística </h3>
-          <p class="card-desc">Tradición, dulzura, calidez</p>
+          <h3>Set Escenográfico Plata Cromo Vanguardia</h3>
+          <p class="card-desc">Modernidad, brillo, sofisticación</p>
           <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
         </div>
       </div>
 
       <div class="card" data-category="Eventos">
-        <div class="card-img" data-ph="💐"><img src="imagen27.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-img" data-ph="💐"><img src="imagen33.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
           <span class="tag">Eventos</span>
-          <h3>Fondo Circular de Globos Orgánicos y Flores</h3>
-          <p class="card-desc">Tendencia, dinamismo, frescura</p>
+          <h3>Oh Baby Gigante Luminoso</h3>
+          <p class="card-desc">Iluminación, ternura, impacto</p>
           <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
         </div>
       </div>
 
       <div class="card" data-category="Eventos">
-        <div class="card-img" data-ph="💐"><img src="imagen28.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-img" data-ph="💐"><img src="imagen76.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
           <span class="tag">Eventos</span>
-          <h3>Set Escenográfico Infantil Aventura de Bluey</h3>
-          <p class="card-desc">Diversión, colorido, alegría</p>
+          <h3>Set Fiesta Encanto Rosa</h3>
+          <p class="card-desc">Magia, dulzura, celebración</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Eventos">
+        <div class="card-img" data-ph="💐"><img src="imagen80.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Eventos</span>
+          <h3>Set Decoración Ciclismo Premium</h3>
+          <p class="card-desc">Aventura, estilo, celebración.</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Eventos">
+        <div class="card-img" data-ph="💐"><img src="imagen75.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Eventos</span>
+          <h3>Set Cumpleaños Oliva y Oro</h3>
+          <p class="card-desc">Celebración, estilo, brillo.</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="Eventos">
+        <div class="card-img" data-ph="💐"><img src="imagen34.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Eventos</span>
+          <h3>Abejita Dulce Primer Añito</h3>
+          <p class="card-desc">Ternura, alegría, diversión</p>
           <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
         </div>
       </div>
@@ -741,504 +1229,109 @@
       </div>
 
       <div class="card" data-category="Eventos">
-        <div class="card-img" data-ph="💐"><img src="imagen32.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-img" data-ph="💝"><img src="decoracionparaevento.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
           <span class="tag">Eventos</span>
-          <h3>Set Escenográfico Plata Cromo Vanguardia</h3>
-          <p class="card-desc">Modernidad, brillo, sofisticación</p>
+          <h3>Decoracion alamuerzo</h3>
+          <p class="card-desc">La mejor decoracion para tus eventos</p>
           <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
         </div>
       </div>
 
-      <div class="card" data-category="Eventos">
-        <div class="card-img" data-ph="💐"><img src="imagen33.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+
+      <div class="card" data-category="Bouquets">
+        <div class="card-img" data-ph="💐"><img src="ramo_peluche_azul.jpg" alt="Bouquets" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
-          <span class="tag">Eventos</span>
-          <h3>Oh Baby Gigante Luminoso</h3>
-          <p class="card-desc">Iluminación, ternura, impacto</p>
+          <span class="tag">Bouquets</span>
+          <h3>Bouquets de Stitch con Rosas Eternas</h3>
+          <p class="card-desc">El regalo soñado para los fanáticos de Stitch.</p>
           <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
         </div>
       </div>
 
-      <div class="card" data-category="Eventos">
-        <div class="card-img" data-ph="💐"><img src="imagen34.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+      
+      <div class="card" data-category="Cajitas">
+        <div class="card-img" data-ph="🧸"><img src="rosas_rojas_detalle.jpg" alt="Cajitas" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
-          <span class="tag">Eventos</span>
-          <h3>Abejita Dulce Primer Añito</h3>
-          <p class="card-desc">Ternura, alegría, diversión</p>
+          <span class="tag">Cajitas</span>
+          <h3>Cajita de Rosas</h3>
+          <p class="card-desc">Consiente a tu persona favorita con este detalle de lujo.</p>
           <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
         </div>
       </div>
 
-      <div class="card" data-category="Fruteros">
-        <div class="card-img" data-ph="💐"><img src="imagen35.jpg" alt="Fruteros" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+      <div class="card" data-category="Cajitas">
+        <div class="card-img" data-ph="🎁"><img src="flores_rosas_ositoblanco.jpg" alt="Cajitas" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
-          <span class="tag">Fruteros</span>
-          <h3>Cesta Frutal y Floral Rayo de Sol</h3>
-          <p class="card-desc">Frescura, vitalidad, alegría</p>
+          <span class="tag">Cajitas</span>
+          <h3>Cajita Sorpresa Snoopy</h3>
+          <p class="card-desc">El detalle más dulce y original, Una hermosa caja con peluche de Snoopy.</p>
           <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
         </div>
       </div>
 
-      <div class="card" data-category="Fruteros">
-        <div class="card-img" data-ph="💐"><img src="imagen37.jpg" alt="Fruteros" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+      <div class="card" data-category="Cajitas">
+        <div class="card-img" data-ph="🌸"><img src="flores_moradas_detalle.jpg" alt="Cajitas" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
-          <span class="tag">Fruteros</span>
-          <h3>Arreglo Cumpleaños Sol y Alegría</h3>
-          <p class="card-desc">Sorpresa, abundancia, festejo</p>
+          <span class="tag">Cajitas</span>
+          <h3>Cajita Lavanda</h3>
+          <p class="card-desc">Hermoso detalle lavanda morado.</p>
+          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        </div>
+      </div>
+      
+
+      <div class="card" data-category="Cajitas">
+        <div class="card-img" data-ph="💝"><img src="detalle_cerveza_corona_nusita.jpg" alt="Cajitas" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+        <div class="card-body">
+          <span class="tag">Cajitas</span>
+          <h3>Caja de Regalo</h3>
+          <p class="card-desc">Sorprende en cualquier ocasión con este exclusivo detalle.</p>
           <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
         </div>
       </div>
 
-      <div class="card" data-category="Fruteros">
-        <div class="card-img" data-ph="💐"><img src="imagen38.jpg" alt="Fruteros" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+      <div class="card" data-category="Cajitas">
+        <div class="card-img" data-ph="💝"><img src="imagen3snf.jpg" alt="Cajitas" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
-          <span class="tag">Fruteros</span>
-          <h3> Arreglo Exótico Pasión y Brindis Premium</h3>
-          <p class="card-desc">Romance, distinción, celebración</p>
+          <span class="tag">Cajitas</span>
+          <h3>detalle leon</h3>
+          <p class="card-desc">hermoso detalle, rosas amarillas</p>
           <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
         </div>
       </div>
 
-      <div class="card" data-category="Fruteros">
-        <div class="card-img" data-ph="💐"><img src="imagen39.jpg" alt="Fruteros" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+      <div class="card" data-category="Cajitas">
+        <div class="card-img" data-ph="💝"><img src="detalle_cervez_amarillo.jpg" alt="Cajitas" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
-          <span class="tag">Fruteros</span>
-          <h3>Cascada de Rosas y Girasoles Amor Eterno</h3>
-          <p class="card-desc">Romance, abundancia, energía</p>
+          <span class="tag">Cajitas</span>
+          <h3>Caja de Regalo amor</h3>
+          <p class="card-desc">Expresa tus sentimientos con un regalo inolvidable.</p>
           <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
         </div>
       </div>
 
-      <div class="card" data-category="Fruteros">
-        <div class="card-img" data-ph="💐"><img src="imagen40.jpg" alt="Fruterosos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+      <div class="card" data-category="Cajitas">
+        <div class="card-img" data-ph="💐"><img src="osito_deflores_blancas.jpg" alt="Cajitas" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
-          <span class="tag">Fruteros</span>
-          <h3>Arreglo Exótico Torre de Girasoles</h3>
-          <p class="card-desc">Altura, color, exotismo</p>
+          <span class="tag">Cajitas</span>
+          <h3>Oso de Rosas Eternas Blanco</h3>
+          <p class="card-desc"> Un regalo mágico que dura para siempre. Hermoso oso hecho con delicadas rosas blancas.</p>
           <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
         </div>
       </div>
 
-      <div class="card" data-category="Detalles en base">
-        <div class="card-img" data-ph="💐"><img src="imagen41.jpg" alt="Detalles en base" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
+
+      <div class="card" data-category="Cajitas">
+        <div class="card-img" data-ph="💐"><img src="imagen41snf.jpg" alt="Cajitas" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
         <div class="card-body">
-          <span class="tag">Detalles en base</span>
-          <h3> Combo Sorpresa Azul Stitch</h3>
+          <span class="tag">Cajitas</span>
+          <h3>Cajitas</h3>
           <p class="card-desc">Diversión, originalidad, alegría</p>
           <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
         </div>
       </div>
 
-      <div class="card" data-category="Detalles en base">
-        <div class="card-img" data-ph="💐"><img src="imagen42.jpg" alt="Detalles en base" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Detalles en base</span>
-          <h3> Desayuno Sorpresa Feliz Cumpleaños </h3>
-          <p class="card-desc">Festejo, abundancia, alegría</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Detalles en base">
-        <div class="card-img" data-ph="💐"><img src="imagen43.jpg" alt="Detalles en base" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Detalles en base</span>
-          <h3> Desayuno Sorpresa Papá el Mejor del Mundo</h3>
-          <p class="card-desc">Festejo, tradición, alegría</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Detalles en base">
-        <div class="card-img" data-ph="💐"><img src="imagen44.jpg" alt="Detalles en base" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Detalles en base</span>
-          <h3>Combo Dulce Encanto con Peluche</h3>
-          <p class="card-desc">Ternura, diversión, dulzura</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-      
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen45.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Ramo Coquette de Rosas</h3>
-          <p class="card-desc">Tendencia, delicadeza, estilo</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen46.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Maxi Ramo Imperial de Lirios Rosados</h3>
-          <p class="card-desc">Abundancia, elegancia, majestuosidad</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen47.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Maxi Ramo Corazón Latidos de Amor</h3>
-          <p class="card-desc">Pasión, romance, impacto</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-      
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen48.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Ramo Coreano Corazón Dulce Pasión</h3>
-          <p class="card-desc">Romance, dulzura, encanto</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen49.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3> Destellos de Girasol</h3>
-          <p class="card-desc"> Alegría, energía, vitalidad</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen50.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Corazón de Madera con Flores Exóticas</h3>
-          <p class="card-desc"> Creatividad, color, encanto</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen51.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Osito de Girasoles Abrazo de Sol</h3>
-          <p class="card-desc">Ternura, creatividad, alegría</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen52.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3> Maxi Ramo Corazón de Pasión con Pedrería</h3>
-          <p class="card-desc">Romance, lujo, impacto</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen53.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Ramo Selecto de Rosas Amarillas </h3>
-          <p class="card-desc">Elegancia, contraste, distinción</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen54.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Maxi Ramo Imperial con Inicial Personalizada</h3>
-          <p class="card-desc">Exclusividad, romance, impacto</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen55.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Bouquet de Mano Elegancia Imperial</h3>
-          <p class="card-desc">Distinción, sofisticación, abundancia</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen56.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Ramo Coreano Dulce Romance y Fresas</h3>
-          <p class="card-desc"> Delicadeza, dulzura, encanto</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen57.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Bouquet Imperial de Rosas Pastel y Chocolates</h3>
-          <p class="card-desc"> Elegancia, exclusividad, impacto</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen58.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3> Ramo de Rosas Mixtas con Peluche </h3>
-          <p class="card-desc"> Completo, vistoso, distinción</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen59.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Ramo Imperial Corona de Soles y Oro</h3>
-          <p class="card-desc">Sofisticación, tendencia, elegancia</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen60.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Ramo Selecto Celebración Dorada</h3>
-          <p class="card-desc">Brillo, éxito, distinción</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen61.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3> Maxi Ramo Coreano Dulce Tentación Rosa</h3>
-          <p class="card-desc">Romance, dulzura, abundancia</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen62.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Maxi Ramo Coreano Pasión e Lirios</h3>
-          <p class="card-desc">Romance, abundancia, majestuosidad</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen63.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Bouquet Silvestre Ilusión Lila y Rosa</h3>
-          <p class="card-desc">Delicadeza, encanto, primavera</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen64.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Bouquet Imperial Éxito Radiante con Girasoles</h3>
-          <p class="card-desc">Celebración, brillo, triunfo</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen65.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3> Ramo Clásico de Rosas Rojas con Chocolates</h3>
-          <p class="card-desc">Detalle, elegancia, sorpresa</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen65.jpg" alt="ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">ramos</span>
-          <h3> Ramo Clásico de Rosas Rojas con Chocolates</h3>
-          <p class="card-desc">Detalle, elegancia, sorpresa</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen66.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Elegancia rosa natural</h3>
-          <p class="card-desc">Ramillete Esplendor</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen67.jpg" alt="ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">ramos</span>
-          <h3>Ramo Amor Eterno</h3>
-          <p class="card.desc">Romance, pasión, elegancia</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" real="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen68.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Ramo Destello de Sol</h3>
-          <p class="card-desc">Energía, luz, alegría</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen69.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Ramo Pasión Absoluta</h3>
-          <p class="card-desc"> Amor, romance, intensidad.</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen70.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Ramo Ternura Rosa</h3>
-          <p class="card-desc">Dulzura, encanto, delicadeza</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen71.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Ramo Dulce Pasión</h3>
-          <p class="card-desc">Rosas y chocolate premium</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen72.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Caja Flechazo de Amor</h3>
-          <p class="card-desc">Rosas, chocolates, romance absoluto</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Arreglos de condolencia">
-        <div class="card-img" data-ph="💐"><img src="imagen73.jpg" alt="Arreglos de condolencia" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Arreglo de condolencia</span>
-          <h3>Corona Homenaje de Luz</h3>
-          <p class="card-desc">Respeto, paz, consuelo</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Eventos">
-        <div class="card-img" data-ph="💐"><img src="imagen74.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Eventos</span>
-          <h3>Elegante y Distinguida</h3>
-          <p class="card-desc">Distinción, pureza, luz</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Eventos">
-        <div class="card-img" data-ph="💐"><img src="imagen75.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Eventos</span>
-          <h3>Set Cumpleaños Oliva y Oro</h3>
-          <p class="card-desc">Celebración, estilo, brillo.</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Eventos">
-        <div class="card-img" data-ph="💐"><img src="imagen76.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Eventos</span>
-          <h3>Set Fiesta Encanto Rosa</h3>
-          <p class="card-desc">Magia, dulzura, celebración</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Eventos">
-        <div class="card-img" data-ph="💐"><img src="imagen77.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Eventos</span>
-          <h3> Decoración Mesa Cítrica</h3>
-          <p class="card-desc">Frescura, color, vitalidad</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Arreglos de condolencia">
-        <div class="card-img" data-ph="💐"><img src="imagen78.jpg" alt="Arreglos de condolencia" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Arreglos de condolencia</span>
-          <h3>Corona Luz Eterna</h3>
-          <p class="card-desc">Paz, respeto, consuelo</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen79.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Arreglo Selección Imperial</h3>
-          <p class="card-desc">Rosas y vino</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Eventos">
-        <div class="card-img" data-ph="💐"><img src="imagen80.jpg" alt="Eventos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Eventos</span>
-          <h3>Set Decoración Ciclismo Premium</h3>
-          <p class="card-desc">Aventura, estilo, celebración.</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="card" data-category="Ramos">
-        <div class="card-img" data-ph="💐"><img src="imagen81.jpg" alt="Ramos" loading="lazy" decoding="async" onerror="imgFix(this)"></div>
-        <div class="card-body">
-          <span class="tag">Ramos</span>
-          <h3>Canasta Dulce Armonía</h3>
-          <p class="card-desc">Rosas, frutas, frescura</p>
-          <a href="https://wa.me/573000000000" class="btn-mini" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        </div>
-      </div>
         
 
     </div>
@@ -1269,6 +1362,7 @@
     </div>
   </div>
 </section>
+
 
 <section class="message">
   <div class="wrap">
@@ -1359,6 +1453,21 @@
     if (DIRECCION || HORARIO) document.getElementById('info').hidden = false;
   });
 </script>
+
+<script>
+  (function () {
+    var tarjetas = document.querySelectorAll('.card');
+    if (!('IntersectionObserver' in window)) return;
+    var obs = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    tarjetas.forEach(function (t) { t.classList.add('reveal'); obs.observe(t); });
+  })();
+</script>
+
+
 
 <!-- NOTA: para cambiar a AZUL CELESTE clarito, reemplaza estas variables en :root:
      --bg: #F3F9FE;  --petal: #DCEBF8;  --sky: #FDE9EF;  --rose: #9CCBEB;  --rose-deep: #2F6E9E;
